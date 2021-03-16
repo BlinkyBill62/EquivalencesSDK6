@@ -1,0 +1,87 @@
+﻿@model ColecticaSdkMvc.Models.ResetMatchesModelStepOne
+
+@{
+    Layout = "~/Views/Shared/_Item.cshtml";
+    <link href="@Url.Content("~/Content/Responsive-Card-Table.css")" rel="stylesheet" type="text/css" />
+}
+
+
+
+    <table class="responsive-card-table unstriped" style="width:100%">
+        <thead>
+            <tr>
+                <th align="left">Question #1</th>
+                <th align="left">Question #2</th>
+                <th align="left">Matches</th>
+                <th align="left">Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Model.Questions1</td>
+                <td>@Model.Questions2</td>
+                <td>@Model.Matches.Count()</td>
+                <td>@Model.Duration</td>
+            </tr>
+        </tbody>
+    </table>
+    <div>
+        <div style="float:left;font-size: 10px; width: 49%; height: 90vh; overflow-x: hidden; overflow-y: auto; border-style: solid; border-width: thin">
+            <table class="responsive-card-table unstriped" style="width:100%">
+                <thead>
+                    <tr>
+                        <th align="left" style="width:10%">Question</th>
+                        <th align="left" style="width:35%">Study #1</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var question in Model.QuestionsSet1)
+                    {
+                        if (string.Compare(question.Description.ToString(), question.Description.ToString()) != 0)
+                        {
+                            <tr>
+                                <td><strong>@question.DisplayLabel</strong></td>
+                                <td><strong>@question.Summary.Values.FirstOrDefault()</strong></td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>@question.DisplayLabel</td>
+                                <td>@question.Summary.Values.FirstOrDefault()</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div> 
+        <div style="float:left; font-size:10px; width:49%; height:90vh; overflow-x:hidden;  overflow-y:auto; border-style:solid; border-width:thin">
+            <table class="responsive-card-table unstriped" style="width:100%">
+                <thead>
+                    <tr>
+                        <th align="left" style="width:10%">Question</th>
+                        <th align="left" style="width:35%">Study #1</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var question in Model.QuestionsSet2)
+                    {
+                        if (string.Compare(question.Description.ToString(), question.Description.ToString()) != 0)
+                        {
+                            <tr>
+                                <td><strong>@question.DisplayLabel</strong></td>
+                                <td><strong>@question.Summary.Values.FirstOrDefault()</strong></td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>@question.DisplayLabel</td>
+                                <td>@question.Summary.Values.FirstOrDefault()</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>

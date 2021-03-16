@@ -1,0 +1,52 @@
+﻿@model ColecticaSdkMvc.Models.ItemTypesModel
+
+@{
+    ViewBag.Title = "Index";
+
+    <link href="@Url.Content("~/Content/Responsive-Card-Table.css")" rel="stylesheet" type="text/css" />
+}
+
+
+<h2>List of Available Item Types</h2>
+
+@using (Html.BeginForm("List", "Home", FormMethod.Post, new { id = "SearchForm2" }))
+{
+
+    <div style="margin-bottom:20px">
+        <label><strong>Item Types</strong></label>
+        @Html.DropDownListFor(x => Model.ItemType, new SelectList(Model.ItemTypes, "Value", "Text"), "-- Select Item Type --", new { onchange = "document.getElementById('SearchForm2').submit();" })
+    </div>
+    if (Model.Results.Count != 0)
+    {
+        <table class="responsive-card-table unstriped" style="width:100%">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th style = "font-size:medium" align="left">DisplayLabel</th>
+                    <th style = "font-size:medium" align="left">Agency Id</th>
+                    <th style = "font-size:medium" align="left">Identifier</th>
+                    <th style = "font-size:medium" align="left">Item Type</th>
+                    <th style = "font-size:medium" align="left">Version Date</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Results)
+                {
+                <tr>
+                    <td>
+                        <button onclick="location.href='@Url.Action("Index", "Item", new { agency = @item.AgencyId, id = item.Identifier })';return false;">Items</button>
+                    </td>
+                    <td style = "font-size:medium" data-label="DisplayLabel">@item.DisplayLabel.Trim()</td>
+                    <td style = "font-size:medium" data-label="AgencyId">@item.AgencyId</td>
+                    <td style = "font-size:medium" data-label="Identifier">@item.Identifier</td>
+                    <td style = "font-size:medium">@item.ItemType</td>
+                    <td style = "font-size:medium">@item.VersionDate</td>
+                    @*<td>@Model.GetQuestionCount(@item.result.AgencyId, @item.result.Identifier)</td>*@
+                </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+}

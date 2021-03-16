@@ -1,0 +1,158 @@
+﻿@model ColecticaSdkMvc.Models.HomeModel
+
+@{
+    ViewBag.Title = "Index";
+
+    <link href="@Url.Content("~/Content/Multi-Level-Accordian-Menu.css")" rel="stylesheet" type="text/css" />
+    <link href="~/Content/smenu.css" rel="stylesheet" type="text/css" />
+}
+@*<style type="text/css">
+    ul {
+        list-style-type: none;
+    }
+
+    .auto-style-xs {
+        color: black;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: smaller;
+        font-weight: normal;
+    }
+
+    .multi-list {
+        float: left;
+        padding-right: 5px;
+    }
+
+    .multi-column {
+        border: 1px solid #3e4547;
+        overflow: auto;
+        box-shadow: 2px 2px 8px #000000;
+        background-color: #d4d5d8;
+    }
+</style>*@
+
+@using (Html.BeginForm("Menu2", "Home", FormMethod.Post, new { id = "SearchForm2" }))
+{
+    if (Model.Results.Count == 0)
+    {
+        <p>No results were found.</p>
+    }
+    else
+    {        
+      
+        <div style="margin-top:20px">
+            <div style="width:65%; height:85vh">
+                <ul class="multilevel-accordion-menu vertical menu" data-accordion-menu>
+                    <li>
+                        <a href="#">Item 1</a>
+                        <ul class="menu vertical sublevel-1">
+                            <li>
+                                <a href="#">Sub-item 1</a>
+                                <ul class="menu vertical sublevel-2">
+                                    <li><a class="subitem" href="#">Thing 1</a></li>
+                                    <li><a class="subitem" href="#">Thing 2</a></li>
+                                    <li><a class="subitem" href="#">Thing 3</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">Sub-item 2</a>
+                                <ul class="menu vertical sublevel-2">
+                                    <li>
+                                        <a href="#">Super-sub-item 1</a>
+                                        <ul class="menu vertical sublevel-3">
+                                            <li><a class="subitem" href="#">Thing 1</a></li>
+                                            <li><a class="subitem" href="#">Thing 2</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a class="subitem" href="#">Thing 2</a></li>
+                                </ul>
+                            </li>
+                            <li><a class="subitem" href="#">Thing 1</a></li>
+                            <li><a class="subitem" href="#">Thing 2</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">Item 2</a>
+                        <ul class="menu vertical sublevel-1">
+                            <li><a class="subitem" href="#">Thing 1</a></li>
+                            <li><a class="subitem" href="#">Thing 2</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">Item 3</a>
+                        <ul class="menu vertical sublevel-1">
+                            <li><a class="subitem" href="#">Thing 1</a></li>
+                            <li><a class="subitem" href="#">Thing 2</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">Item 4</a>
+                        <ul class="menu vertical sublevel-1">
+                            <li>
+                                <a href="#">Sub-item 3</a>
+                                <ul class="menu vertical sublevel-2">
+                                    <li><a class="subitem" href="#">Thing 1</a></li>
+                                    <li><a class="subitem" href="#">Thing 2</a></li>
+                                </ul>
+                            </li>
+                            <li><a class="subitem" href="#">Thing 1</a></li>
+                            <li><a class="subitem" href="#">Thing 2</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            @*<div class="multi-column" style="width:65%; height:85vh; float:left; position:fixed">
+                <ul class="multi-list">
+                    @foreach (var item in Model.Results)
+                    {
+                        <li class="auto-style-xs">
+                            <input id="item@(item.result.AgencyId + " " + item.result.Identifier.ToString())"
+                               type="checkbox"
+                               name="SelectedStudies"
+                               value="@item.result.AgencyId  @item.result.Identifier.ToString()"
+                               @(Model.SelectedStudies.Contains(item.result.AgencyId + " " + @item.result.Identifier.ToString()) ? "checked" : "") />
+                            @item.result.DisplayLabel @item.result.ReferenceItem
+                        </li>                      
+                    }
+                </ul>
+            </div>*@
+            <div style="width:33%; float:right">
+                <div style="width:100%">
+                    <h2>Select Studies to Compare</h2>
+                    <h5>
+                        There are a number of methods for matching Questions between Studies. Some of these will
+                        only match questions if there is a 100% match. Other methods will provide a result based on
+                        the selected percentage match.
+                    </h5>
+                    <h5>Select the methods you wish to use below and and either count or display matching questions</h5>
+                </div>
+                <div class="float-left">
+                    <ul>
+                        @foreach (var item in Model.Methods)
+                        {
+                            <li class="auto-style-xs">
+                                <input id="item@(item.Text)"
+                                   type="checkbox"
+                                   name="SelectedMethods"
+                                   value="@item.Text"
+                                   @(Model.SelectedStudies.Contains(item.Text) ? "checked" : "") />
+                                @item.Text
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div style="width:100%">
+                    <input name="command" type="submit" value="Count Matches" id="count" , style="font-size:small;width:45%" />
+                    <input name="command" type="submit" value="Display Matches" id="display" , style="font-size:small; width:45%" />
+                </div>
+            </div>
+        </div>
+        <input name="command" type="submit" value="Match Question and Text" id="save" , style="font-size:small;width:16%" />
+        <input name="command" type="submit" value="Match Question Text" id="save" , style="font-size:small; width:16%" />
+        <input name="command" type="submit" value="All Word Matching" id="save" , style="font-size:small; width:16%" />
+        <input name="command" type="submit" value="Larger Word Matching" id="save" , style="font-size:small; width:16%" />
+        <input name="command" type="submit" value="Question Text & All Word Matching" id="save" , style="font-size:small; width:16%" />
+        <input name="command" type="submit" value="Question Text & Larger Word Matching" id="save" , style="font-size:small; width:18%" />
+    }
+
+}

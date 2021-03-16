@@ -1,0 +1,148 @@
+﻿@model ColecticaSdkMvc.Models.QuestionModel
+@{
+    Layout = null;
+    TempData.Keep("myModel");
+
+}
+
+<!DOCTYPE html>
+<style type="text/css">
+    ul {
+        list-style-type: none;
+    }
+</style>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container" style="border:solid; border-width:thin; padding:5px">
+            <div class="navbar-collapse collapse">
+                <button style="width:19.5%" onclick="location.href='@Url.Action("Equivalences", "Question", new { itemType = "All" })';return false;"><h5>Select Question Equivalences from Sweeps</h5></button>
+                <button style="width:19.5%" onclick="location.href='@Url.Action("List", "Home")';return false;"><h5>Display Items</h5></button>
+                <button style="width:19.5%" onclick="location.href='@Url.Action("Equivalences", "QuestionItem")';return false;"><h5>Select Question Equivalences from Sweeps</h5></button>
+                <button style="width:19.5%" onclick="location.href='@Url.Action("Equivalences", "Variable")';return false;"><h5>Select Variable Equivalences from Sweeps</h5></button>
+                <button style="width:19.5%" onclick="location.href='@Url.Action("Menu3", "Home")';return false;"><h5>Question Matching for Sweeps in all Studies</h5></button>
+            </div>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("Equivalences", "QuestionItem", new { wordselection = Model.WordSelection, fileName = Model.FileName }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+
+        Model.Word = null;
+
+        <input type="hidden" value="@ViewBag.selectedItems" name="selectedItems" id="selectedItems" />
+        @*@Html.HiddenFor(x => x.FileName)*@
+        @Html.HiddenFor(x => x.Type)
+        @Html.HiddenFor(x => x.StudyName)
+
+        <div style="margin-top:20px; width:100%">
+
+            <div style="width:33%; float:right; height:80vh">
+
+                <div style="width:100%">
+                    <h4>
+                        Please select the equivalences to be analysed against Questions and then sweep(s) to be used with these equivalences
+                    </h4>
+                    <div style="width:100%; margin-bottom:10px; float:left">
+                        <h5>
+                            Select a file of Equivalences to Upload ....
+                        </h5>
+                    </div>
+                    <input name="command" type="submit" value="Upload Equivalences" id="upload" , style="width:150px; float:right; font-size:small; margin-left:5px" />
+                    <input type="file" value="Select Equivalences" id="postedFile" name="postedFile" accept=".csv" style="float:left" />
+                    <div style="width:100%; margin-bottom:10px; float:left">
+                        <h5>
+                            or Add word(s) to search. You can add or delete word(s) to search by using the appropriate buttons.
+                        </h5>
+                    </div>
+                    <div style="margin-bottom:10px">
+                        <table style="width:100%; margin-bottom:10px">
+                            <tr>
+                                <td style="width:85%">@Html.TextBoxFor(model => model.Word, new { style = "width:100%; font-size:small" })</td>
+                                <td style="width:15%"><input name="command" type="submit" value="Save" id="save" , style="font-size:small; float:right" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div style="width:100%; overflow-x:hidden; overflow-y:auto; height:40vh">
+                        @if (Model.WordList.Count() != 0)
+                        {
+                            <div style="margin-bottom:10px">
+                                <table style="width:100%">
+                                    @for (int i = 0; i < Model.WordList.Count(); i++)
+                                    {
+                                        @Html.TextBoxFor(modelItem => Model.WordList[i].Value, new { style = "width:98%", @type = "hidden" })
+                                        <tr>
+                                            <td style="width:85%">@Model.WordList[i].Value</td>
+                                            <td style="width:15%">
+                                                @*<input style="float:right" type="button" title="Delete" value="Delete" onclick="location.href='@Url.Action("DeleteItem", "QuestionItem", new { selectedItems = Model.GetString(Model.SelectedStudies), word = item2.Value, wordselection = Model.WordSelection }) })'" />*@
+                                                <input style="float:right" type="button" title="Delete" value="Delete" onclick="location.href='@Url.Action("DeleteItem", "QuestionItem", new { selectedItems = Model.GetString(Model.SelectedStudies), word = Model.Word, wordselection = Model.WordSelection }) })'" />
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div style="width:100%; padding-top:10px">
+                    <input name="command" type="submit" value="Display Questions" id="searchq" , style="font-size:small;width:49%" />
+                    <input name="command" type="submit" value="Display Variables" id="searchv" , style="font-size:small;width:49%" />
+                </div>
+            </div>
+            <div id="jstree" style="font-size:12px; width:65%; height:80vh; overflow-x:hidden;  overflow-y:auto; border-style:solid; border-width:thin; padding-bottom :5px">
+            </div>
+        </div>
+
+    }
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#jstree').on('changed.jstree', function (e, data) {
+                var i, j;
+                var selectedItems = [];
+                for(i = 0, j = data.selected.length; i < j; i++) {
+
+                    //Fetch the Id.
+                    var id = data.selected[i];
+
+                    //Remove the ParentId.
+                    if(id.indexOf('-') != -1){
+                        id = id.split("-")[1];
+                    }
+
+                    //Add the Node to the JSON Array.
+                    selectedItems.push({
+                        text: data.instance.get_node(data.selected[i]).id,
+                        //id: id,
+                        id: data.instance.get_node(data.selected[i]).id,
+                        parent: data.node.parents[0]
+                    });
+                }
+
+                //Serialize the JSON Array and save in HiddenField.
+                $('#selectedItems').val(JSON.stringify(selectedItems));
+            }).jstree({
+                "core": {
+                    "themes": {
+                        "variant": "large"
+                    },
+                    "data": @Html.Raw(ViewBag.Json)
+                    },
+                "checkbox": {
+                    "keep_selected_style": false
+                },
+                "plugins": ["wholerow", "checkbox"],
+            });
+
+        });
+    </script>
+</body>
+</html>

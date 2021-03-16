@@ -1,0 +1,72 @@
+﻿@model ColecticaSdkMvc.Models.StudyUnitModel
+
+@{
+    Layout = "~/Views/Shared/_Item.cshtml";
+    ViewBag.Title = "Study";
+    <link href="@Url.Content("~/Content/Responsive-Card-Table.css")" rel="stylesheet" type="text/css" />
+}
+
+<h2>@Model.StudyUnit.DublinCoreMetadata.Title.Current</h2>
+
+<h3>@Model.Questions.Count() Questions</h3>
+
+@if (Model.ReferencingItems.Count != 0)
+{
+    foreach (var referenceitems in Model.ReferencingItems)
+    {
+        <h4>@referenceitems.DisplayLabel</h4>
+    }
+}
+
+
+
+
+@if (Model.Questions.Count == 0)
+{
+    <p>No questions are referenced in this study.</p>
+}
+else
+{
+    <table class="responsive-card-table unstriped" style="width:100%">
+        <thead>
+            <tr class="table-expand-row">
+                <th style="width:6%"></th>
+                @*<th style="width:6%"></th>*@
+                <th style = "font-size:medium" align="left">DisplayLabel</th>
+                <th style = "font-size:medium" align="left">Identifier</th>
+                <th style = "font-size:medium" align="left">Question</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var question in Model.Questions)
+            {
+                <tr>
+                    <td>
+                        <button onclick="location.href='@Url.Action("Index", "Item", new { agency = @question.AgencyId, id = question.Identifier })';return false;">Reference Items</button>
+                    </td>
+                    @*<td>
+                        <button onclick="location.href='@Url.Action("Studies", "Home", new { agency = question.AgencyId, id = question.Identifier, question = @question.Summary.FirstOrDefault().Value.ToString(), type = "Matching" })';return false;">Matching Methods</button>
+                    </td>*@
+                    <td style = "font-size:medium" >@question.DisplayLabel</td>
+                    <td style = "font-size:medium" >@question.Identifier</td>
+                    <td style = "font-size:medium" >@question.Summary.FirstOrDefault().Value</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h3>Quality</h3>
+@if (Model.StudyUnit.QualityStatements.Count == 0)
+{
+    <p>This study does not reference a quality statement.</p>
+}
+else
+{
+    <ul>
+        @foreach (var qualityStatement in Model.StudyUnit.QualityStatements)
+        {
+            <li><a href="/item/@qualityStatement.AgencyId/@qualityStatement.Identifier">@qualityStatement.Label.Current</a></li>
+        }
+    </ul>
+}

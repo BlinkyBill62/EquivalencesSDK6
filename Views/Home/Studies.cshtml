@@ -1,0 +1,61 @@
+﻿@model ColecticaSdkMvc.Models.HomeModel
+
+@{
+    ViewBag.Title = "Index";
+
+    <link href="@Url.Content("~/Content/Responsive-Card-Table.css")" rel="stylesheet" type="text/css" />
+}
+
+
+<h2>List of Available Studies</h2>
+
+@using (Html.BeginForm("List", "Home", FormMethod.Post, new { id = "SearchForm2" }))
+{
+    if (Model.Results.Count == 0)
+    {
+        <p>No results were found.</p>
+    }
+    else
+    {
+        <table class="responsive-card-table unstriped" style="width:100%">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th align="left">DisplayLabel</th>
+                    <th align="left">Agency Id</th>
+                    <th align="left">Identifier</th>
+                    <th align="left">Referencing Item</th>
+                    @*<th align="left">Questions</th>*@
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Results)
+                {
+                    <tr>
+                        <td>
+                            @switch (@Model.Type)
+                            {
+                                case "Study":
+                                    <button onclick="location.href='@Url.Action("Index", "Item", new { agency = @item.AgencyId, id = item.Identifier })';return false;">Study Questions</button>
+                                    break;
+                                case "Matching":
+                                    <button onclick="location.href='@Url.Action("Levenshtein", "Item", new { agency = @item.AgencyId, studyid = item.Identifier, questionid = Model.QuestionId, questiontext = Model.QuestionText })';return false;">Levenshtein</button>
+                                    <button onclick="location.href='@Url.Action("StringCompare", "Item", new { agency = @item.AgencyId, studyid = item.Identifier, questionid = Model.QuestionId, questiontext = Model.QuestionText })';return false;">String Compare</button>
+                                    break;
+                                default:
+                                    <button onclick="location.href='@Url.Action("Index", "Item", new { agency = @item.AgencyId, id = item.Identifier })';return false;">Study Questions</button>
+                                    break;
+                            }
+                        </td>
+                        <td data-label="DisplayLabel">@item.DisplayLabel.Trim()</td>
+                        <td data-label="AgencyId">@item.AgencyId</td>
+                        <td data-label="Identifier">@item.Identifier</td>
+                        <td>@item.ReferenceItem</td>
+                        @*<td>@Model.GetReferenceItems(@item.result.AgencyId, @item.result.Identifier).Trim()</td>*@
+                        @*<td>@Model.GetQuestionCount(@item.result.AgencyId, @item.result.Identifier)</td>*@
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}

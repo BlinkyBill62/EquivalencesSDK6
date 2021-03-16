@@ -1,0 +1,217 @@
+﻿@model ColecticaSdkMvc.Models.EquivalenceModel
+@{
+    ViewBag.Title = "ItemType";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    TempData.Keep("EquivalenceModel");
+    <link href="@Url.Content("~/Content/Responsive-Card-Table.css")" rel="stylesheet" type="text/css" />
+}
+
+<style type="text/css">
+    ul {
+        list-style-type: none;
+    }
+</style>
+
+<style>
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+    }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            /* Position the tooltip */
+            position: absolute;
+            z-index: 1;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
+</style>
+
+<script type="text/javascript">
+    function selectFolder(e) {
+        var theFiles = e.target.files;
+        var relativePath = theFiles[0].webkitRelativePath;
+        var folder = relativePath.split("/");
+        alert(folder[0]);
+    }
+</script>
+
+<div style="margin-bottom:20px">
+    <h3>Identifying Equivalent @Model.Type - AllItems = @Model.AllItems.Count</h3>
+</div>
+
+@using (Html.BeginForm("Variables", "Equivalence", new { studyName = Model.StudyName, fileName = Model.FileName }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    int itemCount = 0;
+    int currentItem = 0;
+    int currentCounter = 0;
+
+    if (Model.SelectedStudies.Count != 0)
+    {
+        for (int i = 0; i < Model.SelectedStudies.Count(); i++)
+        {
+            @Html.TextBoxFor(modelItem => Model.SelectedStudies[i], new { style = "width:98%", @type = "hidden" })
+        }
+
+    }
+    if (Model.AllItems.Count() != 0)
+    {
+        for (int i = 0; i < Model.AllItems.Count(); i++)
+        {
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].uniqueId, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].equivalence, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].name, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].description, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].variableName, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].variableText, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].variableItem, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].variableIdentifier, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].variableAgency, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].questionName, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].questionText, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].questionItem, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].questionIdentifier, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].studyGroup, new { style = "width:97%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].study, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].dataset, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].concept, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].column, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].selected, new { style = "width:98%", @type = "hidden" })
+
+        }
+    }
+    <input style="width:100%" value="@ViewBag.selectedItems" name="selectedItems" id="selectedItems" />
+    @Html.HiddenFor(x => x.EquivalenceSelection, new { style = "margin-top:10px; width:100%; font-size:small", @value = "@model.EquivalanceSelection" })
+    @Html.HiddenFor(x => x.FileName)
+    @Html.HiddenFor(x => x.Type)
+    @Html.HiddenFor(x => x.StudyName)
+    if (Model.AllResults.Count() != 0)
+    {
+
+        <div style="overflow:scroll; width:100%;height:80vh">
+            <div style="border: 1px solid black; padding-top:10px; width:150%">
+                <table border="0" style="margin-left:10px">
+                    <thead>
+                        <tr>
+                            <th align="left" style="width:40px">ID</th>
+                            <th align="left" style="width:100px">Search Term</th>
+                            <th align="left" style="width:150px">Name</th>
+                            <th align="left" style="width:400px">Text</th>
+                            <th align="left" style="width:150px">Variable Name</th>
+                            <th align="left" style="width:400px">Variable Text</th>
+                            <th align="left" style="width:350px">Variable Item</th>
+                            <th align="left" style="width:150px">Question Name</th>
+                            <th align="left" style="width:600px">Question Text</th>
+                            <th align="left" style="width:350px">Question Item</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.AllResults.Count(); i++)
+                        {
+                            @Html.TextBoxFor(modelItem => Model.AllResults[i].uniqueId, new { style = "width:98%", @type = "hidden" })
+                            @Html.TextBoxFor(modelItem => Model.AllResults[i].equivalence, new { style = "width:98%", @type = "hidden" })
+                            @Html.TextBoxFor(modelItem => Model.AllResults[i].variableName, new { style = "width:98%", @type = "hidden" })
+                            @Html.TextBoxFor(modelItem => Model.AllResults[i].variableText, new { style = "width:98%", @type = "hidden" })
+                            @Html.TextBoxFor(modelItem => Model.AllResults[i].variableItem, new { style = "width:98%", @type = "hidden" })
+                            @Html.TextBoxFor(modelItem => Model.AllResults[i].variableIdentifier, new { style = "width:98%", @type = "hidden" })
+                            @Html.TextBoxFor(modelItem => Model.AllResults[i].variableAgency, new { style = "width:98%", @type = "hidden" })
+                            @Html.TextBoxFor(modelItem => Model.AllResults[i].questionName, new { style = "width:98%", @type = "hidden" })
+                            @Html.TextBoxFor(modelItem => Model.AllResults[i].questionText, new { style = "width:98%", @type = "hidden" })
+                            @Html.TextBoxFor(modelItem => Model.AllResults[i].questionItem, new { style = "width:98%", @type = "hidden" })
+                            @Html.TextBoxFor(modelItem => Model.AllResults[i].questionIdentifier, new { style = "width:98%", @type = "hidden" })
+                            @Html.TextBoxFor(modelItem => Model.AllResults[i].studyGroup, new { style = "width:97%", @type = "hidden" })
+                            @Html.TextBoxFor(modelItem => Model.AllResults[i].study, new { style = "width:98%", @type = "hidden" })
+                            @Html.TextBoxFor(modelItem => Model.AllResults[i].dataset, new { style = "width:98%", @type = "hidden" })
+                            @Html.TextBoxFor(modelItem => Model.AllResults[i].concept, new { style = "width:98%", @type = "hidden" })
+                            @Html.TextBoxFor(modelItem => Model.AllResults[i].column, new { style = "width:98%", @type = "hidden" })
+                            @Html.TextBoxFor(modelItem => Model.AllResults[i].selected, new { style = "width:98%", @type = "hidden" })
+                            itemCount++;
+                            currentCounter++;
+                            if (itemCount == 1) { currentItem = Model.AllResults[i].uniqueId; }
+                            if (Model.AllResults[i].uniqueId != currentItem)
+                            {
+                                currentItem = Model.AllResults[i].uniqueId;
+                                currentCounter = 1;
+                                @Html.Raw("</tbody></table></div><div style=\"border: 1px solid black; margin-top:5px; width:150%\"><table border=\"0\" style=\"margin-left:10px\">");
+                                @Html.Raw("<thead><tr>")
+                                @Html.Raw("<th align=\"left\" style=\"width:40px\">ID</th>")
+                                @Html.Raw("<th align=\"left\" style=\"width:100px\">Search Term</th>")
+                                @Html.Raw("<th align=\"left\" style=\"width:150px\">Name</th>")
+                                @Html.Raw("<th align=\"left\" style=\"width:400px\">Text</th>")
+                                @Html.Raw("<th align=\"left\" style=\"width:150px\">Variable Name</th>")
+                                @Html.Raw("<th align=\"left\" style=\"width:400px\">Variable Text</th>")
+                                @Html.Raw("<th align=\"left\" style=\"width:350px\">Variable Item</th>")
+                                @Html.Raw("<th align=\"left\" style=\"width:150px\">Question Name</th>")
+                                @Html.Raw("<th align=\"left\" style=\"width:600px\">Question Text</th>")
+                                @Html.Raw("<th align=\"left\" style=\"width:350px\">Question Item</th>")
+
+                                @Html.Raw("</tr></thead><tbody>")
+
+                            }
+                            <tr>
+                                <td style="width:40px">
+                                    @if (currentCounter == 1)
+                                    {
+                                        @Html.DisplayFor(modelItem => Model.AllResults[i].uniqueId, new { style = "width:98%" })
+                                    }
+                                </td>
+                                <td align="left" style="width:100px">
+                                    @if (currentCounter == 1)
+                                    {
+                                        @Html.DisplayFor(modelItem => Model.AllResults[i].equivalence, new { style = "width:98%" })
+                                    }
+                                </td>
+                                <td style="width:150px">
+                                    @if (currentCounter == 1)
+                                    {
+                                        @Html.TextBoxFor(modelItem => Model.AllResults[i].name, new { style = "width:95%" })
+                                    }
+                                </td>
+                                <td style="width:400px">
+                                    @if (currentCounter == 1)
+                                    {
+                                        @Html.TextBoxFor(modelItem => Model.AllResults[i].description, new { style = "width:95%" })
+                                    }
+                                </td>
+                                <td align="left" style="width:150px">
+                                    @Html.DisplayFor(modelItem => Model.AllResults[i].variableName, new { style = "width:98%" })
+                                </td>
+                                <td align="left" style="width:400px">
+                                    @Html.DisplayFor(modelItem => Model.AllResults[i].variableText, new { style = "width:95%" })
+                                </td>
+                                <td align="left" style="width:350px">
+                                    @Html.DisplayFor(modelItem => Model.AllResults[i].variableItem, new { style = "width:98%" })
+                                </td>
+                                <td align="left" style="width:150px">
+                                    @Html.DisplayFor(modelItem => Model.AllResults[i].questionName, new { style = "width:98%" })
+                                </td>
+                                <td style="width:600px">
+                                    @Model.AllResults[i].questionText
+                                    @*@Html.DisplayFor(modelItem => Model.AllResults[i].questionText, new { style = "width:95%" })*@
+                                </td>
+                                <td align="left" style="width:350px">
+                                    @Html.DisplayFor(modelItem => Model.AllResults[i].questionItem, new { style = "width:98%" })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div style="width:100%">
+            <input name="command" type="submit" value="Save CSV" id="save" , style="float:left; font-size:small; margin:10px" />
+            <input name="command" type="submit" value="Next" id="next" , style="float:right; font-size:small; margin:10px" />
+            <input name="command" type="submit" value="Previous" id="previous" , style="float:right; font-size:small; margin:10px" />
+        </div>
+    }
+}

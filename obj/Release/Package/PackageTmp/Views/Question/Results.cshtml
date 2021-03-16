@@ -1,0 +1,87 @@
+﻿@model ColecticaSdkMvc.Models.ExpectedModel
+
+@{
+    ViewBag.Title = "ItemType";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    TempData.Keep("myModel");
+    TempData.Keep("AllResults");
+    TempData.Keep("AllConcepts");
+    <link href="@Url.Content("~/Content/Responsive-Card-Table.css")" rel="stylesheet" type="text/css" />
+}
+
+<style type="text/css">
+    ul {
+        list-style-type: none;
+    }
+</style>
+
+<div style="margin-bottom:20px">
+    <h2>Expected Output</h2>
+</div>
+@using (Html.BeginForm("Results", "Question", FormMethod.Post, new { name = "MyForm", id = "SearchForm2" }))
+{
+    int itemCount = 0;
+    int currentItem = 0;
+    int currentCounter = 0;
+
+    if (Model.expecteditems.Count() != 0)
+    {
+        itemCount = 0;
+        currentItem = 0;
+        currentCounter = 0;
+
+        <div style="border: 1px solid black; margin-top:10px">
+            <table border="0" style="width:100%">
+                @foreach (var item in Model.expecteditems)
+                {
+                    if (itemCount == 0)
+                    {
+                        <thead>
+                            <tr>
+                                <th align="left" style="width:5%">Name</th>
+                                <th align="left" style="width:30%">Description</th>
+                                <th align="left" style="width:10%">Topic</th>
+                                @foreach (var wave in @item.Waves)
+                                {
+                                    <th align="left" style="width:8%">Study: @wave.StudyName</th>
+                                }                               
+                            </tr>
+                        </thead>
+                        @Html.Raw("<tbody>")
+                    }
+
+                    itemCount++;
+                    currentCounter++;
+                    if (itemCount == 1) { currentItem = item.UniqueId; }
+                    if (item.UniqueId != currentItem)
+                    {
+                        currentItem = item.UniqueId;
+                        currentCounter = 1;
+                        @Html.Raw("</tbody></table></div><div style=\"border: 1px solid black; margin-top:5px\"><table border=\"0\" style=\"width: 100%\"><tbody>");
+                    }
+                    <tr>
+                        <td style="width:5%">
+                            @if (currentCounter == 1)
+                            {@item.Name}
+                        </td>
+                        <td style="width:30%">
+                            @if (currentCounter == 1)
+                            {@item.Description}
+                        </td>
+                        <td align="left" style="width:10%">
+                            @if (currentCounter == 1)
+                            {@item.Topic}
+                        </td>
+                        @foreach (var wave in @item.Waves)
+                        {
+                            <td style="width:8%">@wave.Value</td>
+                        }
+                    </tr>
+                }
+                @Html.Raw("</tbody>")
+            </table>
+            <input name="command" type="submit" value="Select more Equivalences" id="select" , style="float:right; font-size:small; margin:10px" />
+        </div>
+    }
+}
+            
