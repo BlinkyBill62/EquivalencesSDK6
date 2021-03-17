@@ -160,13 +160,9 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\DatasetController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
-    <Compile Include="Controllers\QuestionController.cs" />
     <Compile Include="Controllers\EquivalenceController.cs" />
-    <Compile Include="Controllers\QuestionItemController.cs" />
-    <Compile Include="Controllers\VariableController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -229,13 +225,6 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Web.config" />
-    <Content Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
-    <Content Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
@@ -277,6 +266,9 @@
     <Content Include="Views\Equivalence\Results.cshtml" />
     <Content Include="Views\Results.cshtml" />
     <Content Include="Views\Equivalence\Results2.cshtml" />
+    <Content Include="WebDist.config" />
+    <Content Include="WebDist.Debug.config" />
+    <Content Include="WebDist.Release.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
