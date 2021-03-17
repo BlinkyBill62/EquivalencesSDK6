@@ -1,6 +1,5 @@
 D:\EquivalencesSDK6\EquivalencesSDK6\obj\Debug\EquivalencesSDK6.csprojAssemblyReference.cache
 D:\EquivalencesSDK6\EquivalencesSDK6\obj\Debug\EquivalencesSDK6.csproj.CoreCompileInputs.cache
-D:\EquivalencesSDK6\EquivalencesSDK6\bin\EquivalencesSDK6.dll.config
 D:\EquivalencesSDK6\EquivalencesSDK6\bin\EquivalencesSDK6.dll
 D:\EquivalencesSDK6\EquivalencesSDK6\bin\EquivalencesSDK6.pdb
 D:\EquivalencesSDK6\EquivalencesSDK6\bin\roslyn\csc.exe
@@ -94,3 +93,4 @@ D:\EquivalencesSDK6\EquivalencesSDK6\bin\Microsoft.CodeDom.Providers.DotNetCompi
 D:\EquivalencesSDK6\EquivalencesSDK6\obj\Debug\EquivalencesSDK6.csproj.CopyComplete
 D:\EquivalencesSDK6\EquivalencesSDK6\obj\Debug\EquivalencesSDK6.dll
 D:\EquivalencesSDK6\EquivalencesSDK6\obj\Debug\EquivalencesSDK6.pdb
+D:\EquivalencesSDK6\EquivalencesSDK6\bin\EquivalencesSDK6.dll.config

@@ -15,76 +15,91 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Index - AllItems = @Model.AllItems, AllResults = @Model.AllResults</title>
+    <title>Index - Equivalences</title>
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container" style="border:solid; border-width:thin; padding:5px">
             <div class="navbar-collapse collapse">
-                <button style="width:19.5%" onclick="location.href='@Url.Action("Equivalences", "Question", new { itemType = "All" })';return false;"><h5>Select Question Equivalences from Sweeps</h5></button>
-                <button style="width:19.5%" onclick="location.href='@Url.Action("List", "Home")';return false;"><h5>Display Items</h5></button>
-                <button style="width:19.5%" onclick="location.href='@Url.Action("Index", "Equivalence")';return false;"><h5>Select Question Equivalences from Sweeps</h5></button>
-                <button style="width:19.5%" onclick="location.href='@Url.Action("Equivalences", "Variable")';return false;"><h5>Select Variable Equivalences from Sweeps</h5></button>
-                <button style="width:19.5%" onclick="location.href='@Url.Action("Menu3", "Home")';return false;"><h5>Question Matching for Sweeps in all Studies</h5></button>
+                <button style="width:49.5%" onclick="location.href='@Url.Action("List", "Home")';return false;"><h5>Display Items</h5></button>
+                <button style="width:49.5%" onclick="location.href='@Url.Action("Index", "Equivalence")';return false;"><h5>Select Question Equivalences from Sweeps</h5></button>
             </div>
         </div>
     </div>
-
-    @using (Html.BeginForm("Index", "Equivalence", new { wordselection = Model.WordSelection, fileName = Model.FileName }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    @using (Html.BeginForm("Index", "Equivalence", new { wordselection = Model.WordSelection, fileName = Model.FileName, datasets = ViewBag.Datasets }, FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
-        if (Model.SelectedStudies.Count != 0)
-        {
-            for (int i = 0; i < Model.SelectedStudies.Count(); i++)
-            {
-                @Html.TextBoxFor(modelItem => Model.SelectedStudies[i], new { style = "width:98%", @type = "hidden" })
-            }
 
+        if (Model.SelectedStudies != null)
+        {
+            if (Model.SelectedStudies.Count != 0)
+            {
+                for (int i = 0; i < Model.SelectedStudies.Count(); i++)
+                {
+                    @Html.TextBoxFor(modelItem => Model.SelectedStudies[i], new { style = "width:98%", @type = "hidden" })
+                }
+
+            }
         }
 
-        if (Model.AllItems.Count() != 0)
+        if (Model.Datasets != null)
         {
-            for (int i = 0; i < Model.AllItems.Count(); i++)
+            for (int i = 0; i < Model.Datasets.Count(); i++)
             {
-                @Html.TextBoxFor(modelItem => Model.AllItems[i].uniqueId, new { style = "width:98%", @type = "hidden" })
-                @Html.TextBoxFor(modelItem => Model.AllItems[i].equivalence, new { style = "width:98%", @type = "hidden" })
-                @Html.TextBoxFor(modelItem => Model.AllItems[i].name, new { style = "width:98%", @type = "hidden" })
-                @Html.TextBoxFor(modelItem => Model.AllItems[i].description, new { style = "width:98%", @type = "hidden" })
-                @Html.TextBoxFor(modelItem => Model.AllItems[i].variableName, new { style = "width:98%", @type = "hidden" })
-                @Html.TextBoxFor(modelItem => Model.AllItems[i].variableText, new { style = "width:98%", @type = "hidden" })
-                @Html.TextBoxFor(modelItem => Model.AllItems[i].variableItem, new { style = "width:98%", @type = "hidden" })
-                @Html.TextBoxFor(modelItem => Model.AllItems[i].variableIdentifier, new { style = "width:98%", @type = "hidden" })
-                @Html.TextBoxFor(modelItem => Model.AllItems[i].variableAgency, new { style = "width:98%", @type = "hidden" })
-                @Html.TextBoxFor(modelItem => Model.AllItems[i].questionName, new { style = "width:98%", @type = "hidden" })
-                @Html.TextBoxFor(modelItem => Model.AllItems[i].questionText, new { style = "width:98%", @type = "hidden" })
-                @Html.TextBoxFor(modelItem => Model.AllItems[i].questionItem, new { style = "width:98%", @type = "hidden" })
-                @Html.TextBoxFor(modelItem => Model.AllItems[i].questionIdentifier, new { style = "width:98%", @type = "hidden" })
-                @Html.TextBoxFor(modelItem => Model.AllItems[i].studyGroup, new { style = "width:97%", @type = "hidden" })
-                @Html.TextBoxFor(modelItem => Model.AllItems[i].study, new { style = "width:98%", @type = "hidden" })
-                @Html.TextBoxFor(modelItem => Model.AllItems[i].dataset, new { style = "width:98%", @type = "hidden" })
-                @Html.TextBoxFor(modelItem => Model.AllItems[i].concept, new { style = "width:98%", @type = "hidden" })
-                @Html.TextBoxFor(modelItem => Model.AllItems[i].column, new { style = "width:98%", @type = "hidden" })
+                @Html.TextBoxFor(modelItem => Model.Datasets[i].ID, new { style = "width:98%", @type = "hidden" })
+                @Html.TextBoxFor(modelItem => Model.Datasets[i].StudyName, new { style = "width:98%", @type = "hidden" })
+                @Html.TextBoxFor(modelItem => Model.Datasets[i].Value, new { style = "width:98%", @type = "hidden" })
+            }
+        }
 
+        if (Model.AllItems != null)
+        {
+            if (Model.AllItems.Count() != 0)
+            {
+                for (int i = 0; i < Model.AllItems.Count(); i++)
+                {
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].uniqueId, new { style = "width:98%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].equivalence, new { style = "width:98%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].name, new { style = "width:98%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].description, new { style = "width:98%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].variableName, new { style = "width:98%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].variableText, new { style = "width:98%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].variableItem, new { style = "width:98%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].variableIdentifier, new { style = "width:98%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].variableAgency, new { style = "width:98%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].questionName, new { style = "width:98%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].questionText, new { style = "width:98%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].questionItem, new { style = "width:98%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].questionIdentifier, new { style = "width:98%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].questionOrdered, new { style = "width:98%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].variableOrdered, new { style = "width:98%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].studyGroup, new { style = "width:97%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].study, new { style = "width:98%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].dataset, new { style = "width:98%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].concept, new { style = "width:98%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].column, new { style = "width:98%", @type = "hidden" })
+                    @Html.TextBoxFor(modelItem => Model.AllItems[i].set, new { style = "width:98%", @type = "hidden" })
+
+                }
             }
         }
         Model.Word = null;
 
-        <input style="width:100%" value="@ViewBag.selectedItems" name="selectedItems" id="selectedItems" />
-        <input style="width:100%" value="@ViewBag.selectedItems" name="originalItems" id="orignalItems" />
+        <input type="hidden" style="width:100%" value="@ViewBag.selectedItems" name="selectedItems" id="selectedItems" />
+        <input type="hidden" style="width:100%" value="@ViewBag.originalItems" name="originalItems" id="originalItems" />
+        <input type="hidden" style="width:100%" value="@ViewBag.Datasets" name="originalItems" id="Datasets" />
 
-        @*@Html.HiddenFor(x => x.FileName)*@
         @Html.HiddenFor(x => x.Type)
-        @Html.HiddenFor(x => x.StudyName)
-
-        <div style="margin-top:20px; width:100%">
+        @Html.HiddenFor(x => x.StudyName)        
+        <div style="margin-top:10px; width:100%">
 
             <div style="width:33%; float:right; height:80vh">
-                <div style="margin-top:10px; color:red"><h3>@Model.EquivalenceError</h3></div>
-                <h3>Index - AllItems = @Model.AllItems.Count</h3>
+                <div style="margin-top:5px; color:red"><h3>@Model.EquivalenceError</h3></div>
+                <h4>Index</h4>               
                 <div style="width:100%">
-                    <h4>
+                    <h5>
                         There are a number of methods for matching equivalences in Studies. The methods below
                         will only provide a match where there is 100% correlation.
-                    </h4>
+                    </h5>
 
                     <div class="float-left" style="font-size:12px">
                         <ul>
@@ -104,24 +119,24 @@
                         <label style="margin-left:5px">Match Name</label>
                         @Html.RadioButtonFor(model => model.Name, "false", new { style = "margin-left:10px" })
                         <label>Match Text</label>
-                    </div>
-                    <h4>
-                        Please select the equivalences to be analysed and then sweep(s) to be used with these equivalences
-                    </h4>
-                    <div style="width:100%; margin-bottom:10px; float:left">
+                    </div>                   
+                    <div style="width:100%; margin-bottom:5px; float:left">
+                        <h5>
+                            Please select the equivalences to be analysed and then sweep(s) to be used with these equivalences
+                        </h5>
                         <h5>
                             Select a file of Equivalences to Upload ....
                         </h5>
                     </div>
                     <input name="command" type="submit" value="Upload Equivalences" id="upload" , style="width:150px; float:right; font-size:small; margin-left:5px" />
                     <input type="file" value="Select Equivalences" id="postedFile" name="postedFile" accept=".csv" style="float:left" />
-                    <div style="width:100%; margin-bottom:10px; float:left">
+                    <div style="width:100%; margin-bottom:5px; float:left">
                         <h5>
                             or Add word(s) to search. You can add or delete word(s) to search by using the appropriate buttons.
                         </h5>
                     </div>
                     <div style="margin-bottom:10px">
-                        <table style="width:100%; margin-bottom:10px">
+                        <table style="width:100%; margin-bottom:5px">
                             <tr>
                                 <td style="width:85%">@Html.TextBoxFor(model => model.Word, new { style = "width:100%; font-size:small" })</td>
                                 <td style="width:15%"><input name="command" type="submit" value="Save" id="save" , style="font-size:small; float:right" /></td>
@@ -148,9 +163,18 @@
                         }
                     </div>
                 </div>
-                <div style="width:100%; padding-top:10px">
+                <div style="width:100%; padding-top:5px">
                     <input name="command" type="submit" value="Equivalent Questions" id="searchq" , style="font-size:small;width:49%" />
                     <input name="command" type="submit" value="Equivalent Variables" id="searchv" , style="font-size:small;width:49%" />
+                    <div style="width:100%; margin-bottom:5px; float:left">
+                        <h5 style="text-align:center">or Select processed Equivalent items to Upload ....
+                        </h5>
+                    </div>
+                    <div style="width:100%; margin-top:5px">
+                        <input name="command" type="submit" value="Upload" id="upload1" , style="width:150px; float:right; font-size:small; margin-left:5px" />
+                        <input type="file" value="Process Equivalences" id="postedFile" name="postedFile1" accept=".csv" style="float:left" />
+                    </div>
+
                 </div>
             </div>
             <div>
@@ -158,7 +182,6 @@
                 </div>
             </div>
         </div>
-
     }
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />

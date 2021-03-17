@@ -229,9 +229,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home1\About.cshtml" />
-    <Content Include="Views\Home1\Contact.cshtml" />
-    <Content Include="Views\Home1\Index.cshtml" />
     <Content Include="Views\Home\DisplayDifferences.cshtml" />
     <Content Include="Views\Home\DisplayMatches.cshtml" />
     <Content Include="Views\Home\Foundation_Index.cshtml" />
@@ -250,15 +247,7 @@
     <Content Include="Views\Item\QualityStatement.cshtml" />
     <Content Include="Views\Item\StringCompare.cshtml" />
     <Content Include="Views\Item\StudyUnit.cshtml" />
-    <Content Include="Views\Question\Equivalences.cshtml" />
-    <Content Include="Views\Question\Results.cshtml" />
-    <Content Include="Views\Question\Variables.cshtml" />
     <Content Include="Views\Shared\_Item.cshtml" />
-    <Content Include="Views\Variable\Equivalences.cshtml" />
-    <Content Include="Views\Question\Display.cshtml" />
-    <Content Include="Views\Variable\Display.cshtml" />
-    <Content Include="Views\QuestionItem\Display.cshtml" />
-    <Content Include="Views\QuestionItem\Equivalences.cshtml" />
     <Content Include="Views\Equivalence\Display.cshtml" />
     <Content Include="Views\Equivalence\Index.cshtml" />
     <Content Include="Views\Display.cshtml" />
@@ -269,6 +258,13 @@
     <Content Include="WebDist.config" />
     <Content Include="WebDist.Debug.config" />
     <Content Include="WebDist.Release.config" />
+    <Content Include="Web.config" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

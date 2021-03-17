@@ -1,10 +1,17 @@
-﻿@model ColecticaSdkMvc.Models.EquivalenceModel
+﻿@using ColecticaSdkMvc.Models;
+@using System.Collections.Generic;
+@model ColecticaSdkMvc.Models.EquivalenceModel
 @{
-    ViewBag.Title = "ItemType";
+    /**/
+
+    ViewBag.Title = "Display";
     Layout = "~/Views/Shared/_Layout.cshtml";
     TempData.Keep("EquivalenceModel");
-    <link href="@Url.Content("~/Content/Responsive-Card-Table.css")" rel="stylesheet" type="text/css" />
+    var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+    var val = jss.Serialize(ViewBag.AllResults);
 }
+
+
 
 <style type="text/css">
     ul {
@@ -38,17 +45,63 @@
 </style>
 
 <script type="text/javascript">
-    function selectFolder(e) {
-        var theFiles = e.target.files;
-        var relativePath = theFiles[0].webkitRelativePath;
-        var folder = relativePath.split("/");
-        alert(folder[0]);
+
+     //create a user-defined function to download CSV file
+    function download_csv_file(data) {
+        var csvdata = "";
+        
+        csvdata = "ID, Search Term, Question Name, Question Text, Question Item, Variable Name, Variable Text, Variable Item, Agency, Study, Concept, Dataset\n";
+        var result = JSON.stringify(data).trim();
+        result = result.replace('"[', '').replace(']"', '').trim();
+        while (result.length != 0) {
+            if (result.length != 0) { var currentItem = result.substr(result.indexOf("{"), result.indexOf("},")); }           
+            result = result.substr(result.indexOf("},") + 2, result.length - result.indexOf("},"));
+            if (currentItem.length != 0) {
+                var uniqueid = currentItem.substr(currentItem.indexOf('uniqueId') + 11, currentItem.length - currentItem.indexOf('uniqueId') - 11);
+                uniqueid = uniqueid.substr(0, uniqueid.indexOf(",") + 1).replace(",","");                
+                var equivalence = currentItem.substr(currentItem.indexOf('equivalence') + 16, currentItem.length - currentItem.indexOf('equivalence') - 16);
+                equivalence = equivalence.substr(0, equivalence.indexOf(",") - 2);
+                var variablename = currentItem.substr(currentItem.indexOf('variableName') + 17, currentItem.length - currentItem.indexOf('variableName') - 17);
+                variablename = variablename.substr(0, variablename.indexOf(",") - 2);
+                var variabletext = currentItem.substr(currentItem.indexOf('variableText') + 17, currentItem.length - currentItem.indexOf('variableText') - 17);
+                variabletext = variabletext.substr(0, variabletext.indexOf(",") - 2);
+                var variableitem = currentItem.substr(currentItem.indexOf('variableItem') + 17, currentItem.length - currentItem.indexOf('variableItem') - 17);
+                variableitem = variableitem.substr(0, variableitem.indexOf(",") - 2);
+                var questionname = currentItem.substr(currentItem.indexOf('questionName') + 17, currentItem.length - currentItem.indexOf('questionName') - 17);
+                questionname = questionname.substr(0, questionname.indexOf(",") - 2);
+                var questiontext = currentItem.substr(currentItem.indexOf('questionText') + 17, currentItem.length - currentItem.indexOf('questionText') - 17);
+                questiontext = questiontext.substr(0, questiontext.indexOf(",") - 2);
+                var questionitem = currentItem.substr(currentItem.indexOf('questionItem') + 17, currentItem.length - currentItem.indexOf('questionItem') - 17);
+                questionitem = questionitem.substr(0, questionitem.indexOf(",") - 2);
+                var agency = currentItem.substr(currentItem.indexOf('study\\') + 10, currentItem.length - currentItem.indexOf('study\\') - 10);
+                agency = agency.substr(0, agency.indexOf(",") - 2);
+                var study = currentItem.substr(currentItem.indexOf('studyGroup') + 15, currentItem.length - currentItem.indexOf('studyGroup') - 15);
+                study = study.substr(0, study.indexOf(",") - 2);
+                var concept = currentItem.substr(currentItem.indexOf('concept') + 12, currentItem.length - currentItem.indexOf('concept') - 12);
+                concept = concept.substr(0, concept.indexOf(",") - 2);
+                var dataset = currentItem.substr(currentItem.indexOf('dataset') + 12, currentItem.length - currentItem.indexOf('dataset') - 12);
+                dataset = dataset.substr(0, dataset.indexOf(",") - 2);
+                csvdata = csvdata  + uniqueid + "," + equivalence + "," + questionname + "," + questiontext.replace(",", "").trim() + "," + questionitem + "," + variablename + "," + variabletext.replace(",", " ") + "," +
+                    variableitem + "," + agency + "," + study + "," + concept + "," + dataset;
+                csvdata += "\n";
+                //alert(currentItem);
+            }
+        }
+        var hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvdata);
+        hiddenElement.target = '_blank';
+        //provide the name for the CSV file to be downloaded
+        hiddenElement.download = 'Display.csv';
+        hiddenElement.click();
+        // return csv;
     }
+
 </script>
 
-<div style="margin-bottom:20px">
-    <h3>Identifying Equivalent @Model.Type - AllItems = @Model.AllItems.Count</h3>
+<div style="margin-bottom:10px">
+    <h3>Display - Equivalences @Model.Elapsed</h3>
 </div>
+
 
 @using (Html.BeginForm("Display", "Equivalence", new { studyName = Model.StudyName, fileName = Model.FileName }, FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
@@ -56,13 +109,15 @@
     int currentItem = 0;
     int currentCounter = 0;
 
-    if (Model.SelectedStudies.Count != 0)
+    if (Model.SelectedStudies != null)
     {
-        for (int i = 0; i < Model.SelectedStudies.Count(); i++)
+        if (Model.SelectedStudies.Count != 0)
         {
+            for (int i = 0; i < Model.SelectedStudies.Count(); i++)
+            {
             @Html.TextBoxFor(modelItem => Model.SelectedStudies[i], new { style = "width:98%", @type = "hidden" })
+            }
         }
-
     }
 
     if (Model.AllItems.Count() != 0)
@@ -87,11 +142,29 @@
             @Html.TextBoxFor(modelItem => Model.AllItems[i].dataset, new { style = "width:98%", @type = "hidden" })
             @Html.TextBoxFor(modelItem => Model.AllItems[i].concept, new { style = "width:98%", @type = "hidden" })
             @Html.TextBoxFor(modelItem => Model.AllItems[i].column, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].set, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].questionOrdered, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].variableOrdered, new { style = "width:98%", @type = "hidden" })
 
         }
     }
-    <input style="width:100%" value="@ViewBag.selectedItems" name="selectedItems" id="selectedItems" />
-    <input style="width:100%" value="@ViewBag.selectedItems" name="originalItems" id="originalItems" />
+
+    if (Model.Datasets != null)
+    {
+        if (Model.Datasets.Count != 0)
+        {
+            for (int i = 0; i < Model.Datasets.Count(); i++)
+            {
+                @Html.TextBoxFor(modelItem => Model.Datasets[i].ID, new { style = "width:98%", @type = "hidden" })
+                @Html.TextBoxFor(modelItem => Model.Datasets[i].StudyName, new { style = "width:98%", @type = "hidden" })
+                @Html.TextBoxFor(modelItem => Model.Datasets[i].Value, new { style = "width:98%", @type = "hidden" })
+            }
+
+        }
+    }
+    <input type="hidden" style="width:100%" value="@ViewBag.selectedItems" name="selectedItems" id="selectedItems" />
+    <input type="hidden" style="width:100%" value="@ViewBag.selectedItems" name="originalItems" id="originalItems" />
+
 
     @Html.HiddenFor(x => x.EquivalenceSelection, new { style = "margin-top:10px; width:100%; font-size:small", @value = "@model.EquivalanceSelection" })
     @Html.HiddenFor(x => x.FileName)
@@ -99,7 +172,6 @@
     @Html.HiddenFor(x => x.StudyName)
     if (Model.AllResults.Count() != 0)
     {
-
         <div style="overflow:scroll; width:100%;height:80vh">
             <div style="border: 1px solid black; padding-top:10px; width:130%">
                 <table border="0" style="margin-left:10px">
@@ -138,7 +210,6 @@
                             @Html.TextBoxFor(modelItem => Model.AllResults[i].dataset, new { style = "width:98%", @type = "hidden" })
                             @Html.TextBoxFor(modelItem => Model.AllResults[i].concept, new { style = "width:98%", @type = "hidden" })
                             @Html.TextBoxFor(modelItem => Model.AllResults[i].column, new { style = "width:98%", @type = "hidden" })
-                            @Html.TextBoxFor(modelItem => Model.AllResults[i].selected, new { style = "width:98%", @type = "hidden" })
 
                             itemCount++;
                             currentCounter++;
@@ -169,35 +240,35 @@
                                         @Html.DisplayFor(modelItem => Model.AllResults[i].uniqueId, new { style = "width:98%" })
                                     }
                                 </td>
-                                <td align="left" style="width:120px">
+                                <td valign="top" align="left" style="width:120px; margin-top:0">
                                     @if (currentCounter == 1)
                                     {
                                         @Html.DisplayFor(modelItem => Model.AllResults[i].equivalence, new { style = "width:98%" })
                                     }
                                 </td>
-                                <td style="width:40px">
+                                <td valign="top" style="width:40px; margin-top:0">
                                     @Html.CheckBoxFor(modelItem => Model.AllResults[i].selected, new { style = "width:98%" })
                                 </td>
                                 <td align="left" style="width:250px">
                                     @Html.DisplayFor(modelItem => Model.AllResults[i].questionName, new { style = "width:98%" })
                                 </td>
-                                <td style="width:600px">
+                                <td valign="top" style="width:600px; margin-top:0">
                                     @Html.DisplayFor(modelItem => Model.AllResults[i].questionText, new { style = "width:95%" })
                                 </td>
                                 <td align="left" style="width:250px">
                                     @Html.DisplayFor(modelItem => Model.AllResults[i].variableName, new { style = "width:98%" })
                                 </td>
-                                <td align="left" style="width:400px">
+                                <td align="left" style="width:400px; margin-top:0">
                                     @Html.DisplayFor(modelItem => Model.AllResults[i].variableText, new { style = "width:95%" })
                                 </td>
-                                <td align="left" style="width:100px">
+                                <td valign="top" align="left" style="width:100px; margin-top:0">
                                     @Html.DisplayFor(modelItem => Model.AllResults[i].study, new { style = "width:95%" })
                                 </td>
-                                <td align="left" style="width:16%">
+                                <td align="left" style="width:16%; margin-top:0">
                                     @Html.DisplayFor(modelItem => Model.AllResults[i].studyGroup, new { style = "width:98%" })
                                 </td>
 
-                                <td align="left" style="width:12%">
+                                <td valign="top" align="left" style="width:12%; margin-top:0">
                                     @Html.DisplayFor(modelItem => Model.AllResults[i].concept, new { style = "width:98%" })
                                 </td>
                             </tr>
@@ -207,9 +278,12 @@
             </div>
         </div>
         <div style="width:100%">
-            <input name="command" type="submit" value="Save CSV" id="save" , style="float:left; font-size:small; margin:10px" />
+            @{var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();}
+            <button type="button" onclick="download_csv_file('@serializer.Serialize(Model.AllResults)')" style="float:left; font-size:small; margin:10px">Save CSV</button>
+            @*<input name="command" type="submit" value="Save CSV" id="save" , style="float:left; font-size:small; margin:10px" />*@
             <input name="command" type="submit" value="Next" id="next" , style="float:right; font-size:small; margin:10px" />
             <input name="command" type="submit" value="Previous" id="previous" , style="float:right; font-size:small; margin:10px" />
+
         </div>
     }
 }

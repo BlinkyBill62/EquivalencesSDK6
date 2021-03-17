@@ -1,0 +1,317 @@
+﻿@model ColecticaSdkMvc.Models.ExpectedModel
+
+@{
+    ViewBag.Title = "Waves";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    TempData.Keep("EquivalenceModel");
+    <link href="@Url.Content("~/Content/Responsive-Card-Table.css")" rel="stylesheet" type="text/css" />
+}
+
+<style type="text/css">
+    ul {
+        list-style-type: none;
+    }
+</style>
+
+<script type="text/javascript">
+
+     //create a user-defined function to download CSV file
+    function download_csv_file(data) {
+        var csvdata = "";
+
+        csvdata = "Search Term, Description, Topic,";
+        var result = JSON.stringify(data).trim();
+        result = result.replace('"[', '').replace(']"', '').trim();
+        var currentItem = result;
+        var counter = 0;
+        while (location != -1) {
+            var location = result.indexOf('UniqueId');
+            if (location = 3) {
+                var header = result.substring(0, result.indexOf('Waves') + 7);
+                var uniqueid = header.substr(header.indexOf('UniqueId') + 8, header.length - header.indexOf('UniqueId') - 8);
+                uniqueid = uniqueid.substr(0, uniqueid.indexOf(",") - 2);
+                var name = header.substr(header.indexOf('Name') + 9, header.length - header.indexOf('Name') - 9);
+                name = name.substr(0, name.indexOf(",") - 2);
+                var description = header.substr(header.indexOf('Description') + 16, header.length - header.indexOf('Description') - 16);
+                description = description.substr(0, description.indexOf(",") - 2);
+                var topic = header.substr(header.indexOf('Topic') + 10, header.length - header.indexOf('Topic') - 10);
+                topic = topic.substr(0, topic.indexOf(",") - 2);
+                result = result.replace(header, "");
+                location = result.indexOf('UniqueId');
+                if (location != -1) {
+                    waves = result.substring(2, location - 3);
+                    result = result.replace(waves, "");
+                }
+                else {
+                    waves = result;
+                }
+                if (counter == 0) {
+                    var waves2 = waves;
+                    var location2 = waves2.length;
+                    while (location2 != -1) {
+                        location2 = waves2.indexOf("ID");
+                        if (location2 = 3) {
+                            if (waves2.indexOf("},{") != -1) {
+                                var wave2 = waves2.substring(0, waves2.indexOf("},{") + 2);
+                                waves2 = waves2.replace(wave2, "");
+                                var value = wave2.substr(wave2.indexOf('StudyName') + 14, wave2.length - wave2.indexOf('StudyName') - 14);
+                                value = value.substr(0, value.indexOf(",") - 3);
+                                csvdata = csvdata + value + ",";
+                            }
+                            else {
+                                wave2 = waves2;
+                                waves2 = "";
+                                location2 = -1;
+                                var value = wave2.substr(wave2.indexOf('StudyName') + 14, wave2.length - wave2.indexOf('StudyName') - 14);
+                                value = value.substr(0, value.indexOf(",") - 5);
+                                csvdata = csvdata + value + "\n";
+                            }
+                        }
+                    }
+                }
+                csvdata += name + "," + description + "," + topic + ",";
+                var location1 = waves.length;
+                while (location1 != -1) {
+                    location1 = waves.indexOf("ID");
+                    if (location1 = 3) {
+                        if (waves.indexOf("},{") != -1) {
+                            var wave = waves.substring(0, waves.indexOf("},{") + 2);
+                            waves = waves.replace(wave, "");
+                            var value = wave.substr(wave.indexOf('Value') + 10, wave.length - wave.indexOf('Value') - 10);
+                            value = value.substr(0, value.indexOf(",") - 2);
+                            csvdata = csvdata + value + ",";
+                        }
+                        else {
+                            wave = waves;
+                            waves = "";
+                            location1 = -1;
+                            var value = wave.substr(wave.indexOf('Value') + 10, wave.length - wave.indexOf('Value') - 10);
+                            value = value.substr(0, value.indexOf(",") - 2);
+                            csvdata = csvdata + value;
+
+                        }
+                    }  
+                }
+                csvdata += "\n";
+            }
+            counter = counter + 1;
+        }
+
+        var hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvdata);
+        hiddenElement.target = '_blank';
+        //provide the name for the CSV file to be downloaded
+        hiddenElement.download = 'Waves.csv';
+        hiddenElement.click();
+    }
+
+</script>
+
+
+<div style="margin-bottom:20px">
+    <h2>Waves - Expected Output</h2>
+</div>
+@using (Html.BeginForm("Waves", "Equivalence", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    int itemCount = 0;
+    int currentItem = 0;
+    int currentCounter = 0;
+    if (Model.SelectedStudies != null)
+    {
+        if (Model.SelectedStudies.Count != 0)
+        {
+            for (int i = 0; i < Model.SelectedStudies.Count(); i++)
+            {
+            @Html.TextBoxFor(modelItem => Model.SelectedStudies[i], new { style = "width:98%", @type = "hidden" })
+            }
+
+        }
+    }
+
+    if (Model.Datasets != null)
+    {
+        if (Model.Datasets.Count != 0)
+        {
+            for (int i = 0; i < Model.Datasets.Count(); i++)
+            {
+                @Html.TextBoxFor(modelItem => Model.Datasets[i].ID, new { style = "width:98%", @type = "hidden" })
+                @Html.TextBoxFor(modelItem => Model.Datasets[i].StudyName, new { style = "width:98%", @type = "hidden" })
+                @Html.TextBoxFor(modelItem => Model.Datasets[i].Value, new { style = "width:98%", @type = "hidden" })
+            }
+
+        }
+    }
+
+    if (Model.AllItems.Count() != 0)
+    {
+        for (int i = 0; i < Model.AllItems.Count(); i++)
+        {
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].uniqueId, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].equivalence, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].name, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].description, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].variableName, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].variableText, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].variableItem, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].variableIdentifier, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].variableAgency, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].questionName, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].questionText, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].questionItem, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].questionIdentifier, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].studyGroup, new { style = "width:97%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].study, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].dataset, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].concept, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].column, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].set, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].questionOrdered, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllItems[i].variableOrdered, new { style = "width:98%", @type = "hidden" })
+
+        }
+    }
+
+    if (Model.AllResults.Count() != 0)
+    {
+        for (int i = 0; i < Model.AllResults.Count(); i++)
+        {
+            @Html.TextBoxFor(modelItem => Model.AllResults[i].uniqueId, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllResults[i].equivalence, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllResults[i].name, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllResults[i].description, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllResults[i].variableName, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllResults[i].variableText, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllResults[i].variableItem, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllResults[i].variableIdentifier, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllResults[i].variableAgency, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllResults[i].questionName, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllResults[i].questionText, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllResults[i].questionItem, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllResults[i].questionIdentifier, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllResults[i].studyGroup, new { style = "width:97%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllResults[i].study, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllResults[i].dataset, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllResults[i].concept, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllResults[i].column, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.AllResults[i].selected, new { style = "width:98%", @type = "hidden" })
+        }
+    }
+    if (Model.expecteditems.Count() != 0)
+    {
+
+        for (int i = 0; i < Model.expecteditems.Count(); i++)
+        {
+            @Html.TextBoxFor(modelItem => Model.expecteditems[i].UniqueId, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.expecteditems[i].Name, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.expecteditems[i].Description, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.expecteditems[i].Topic, new { style = "width:98%", @type = "hidden" })
+
+            for (int j = 0; j < Model.expecteditems[i].Waves.Count(); j++)
+            {
+                @Html.TextBoxFor(modelItem => Model.expecteditems[i].Waves[j].ID, new { style = "width:98%", @type = "hidden" })
+                @Html.TextBoxFor(modelItem => Model.expecteditems[i].Waves[j].StudyName, new { style = "width:98%", @type = "hidden" })
+                @Html.TextBoxFor(modelItem => Model.expecteditems[i].Waves[j].Value, new { style = "width:98%", @type = "hidden" })
+
+            }
+        }
+    }
+
+    <input type="hidden" style="width:100%" value="@ViewBag.selectedItems" name="selectedItems" id="selectedItems" />
+
+    if (Model.expecteditems.Count() != 0)
+    {
+        itemCount = 0;
+        currentItem = 0;
+        currentCounter = 0;
+
+        <div style="overflow:scroll; width:100%;height:80vh">
+            <div style="border: 1px solid black; margin-top:10px;width:150%">
+                <table border="0" style="margin-left:10px">
+                    @foreach (var item in Model.expecteditems)
+                    {
+                        if (itemCount == 0)
+                        {
+                            <thead>
+                                <tr>
+                                    <th align="left" style="width:40px">Id</th>
+                                    <th align="left" style="width:100px">Search Term</th>
+                                    <th align="left" style="width:250px">Name</th>
+                                    <th align="left" style="width:600px">Description</th>
+                                    <th align="left" style="width:250px">Concept</th>
+                                    @foreach (var wave in @item.Waves)
+                                    {
+                                        <th align="left" style="width:250px">@wave.StudyName</th>
+                                    }
+                                </tr>
+                            </thead>
+                            @Html.Raw("<tbody>")
+                        }
+
+                        itemCount++;
+                        currentCounter++;
+                        if (itemCount == 1) { currentItem = item.UniqueId; }
+                        if (item.UniqueId != currentItem)
+                        {
+                            currentItem = item.UniqueId;
+                            currentCounter = 1;
+                            @Html.Raw("</tbody></table></div><div style=\"border: 1px solid black; margin-top:5px; width:150%\"><table border=\"0\" style=\"margin-left:10px\">");
+                            @Html.Raw("<thead><tr>")
+                            @Html.Raw("<th align=\"left\" style=\"width:40px\">Id</th>")
+                            @Html.Raw("<th align=\"left\" style=\"width:100px\">Search Term</th>")
+                            @Html.Raw("<th align=\"left\" style=\"width:250px\">Name</th>")
+                            @Html.Raw("<th align=\"left\" style=\"width:600px\">Description</th>")
+                            @Html.Raw("<th align=\"left\" style=\"width:250px\">Concept</th>")
+                            foreach (var wave in @item.Waves)
+                            {
+                                @Html.Raw("<th align=\"left\" style=\"width:250px\">" + @wave.StudyName + "</th>")
+                            }
+                            @Html.Raw("</tr></thead><tbody>")
+                        }
+
+                        @*@Html.TextBoxFor(modelItem => Model.expecteditems[i].UniqueId, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.expecteditems[i].Description, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.expecteditems[i].Name, new { style = "width:98%", @type = "hidden" })
+            @Html.TextBoxFor(modelItem => Model.expecteditems[i].Topic, new { style = "width:98%", @type = "hidden" })*@
+
+                            <tr>
+                                <td style="width:40px">
+                                    @if (currentCounter == 1)
+                                    {@item.UniqueId}
+                                </td>
+                                <td style="width:100px">
+                                    @if (currentCounter == 1)
+                                    {@item.Equivalence}
+                                </td>
+                                <td style="width:100px">
+                                    @if (currentCounter == 1)
+                                    {@item.Name}
+                                </td>
+                                <td style="width:600px">
+                                    @if (currentCounter == 1)
+                                    {@item.Description}
+                                </td>
+                                <td align="left" style="width:250px">
+                                    @item.Topic
+                                </td>
+                                @foreach (var wave in @item.Waves)
+                                {
+                                    <td style="width:250px">@wave.Value</td>
+                                }
+                            </tr>
+                    }
+
+                    @Html.Raw("</tbody>")
+                </table>
+            </div>
+        </div>
+        <div style="width:100%">
+            @{var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();}
+            <button type="button" onclick="download_csv_file('@serializer.Serialize(Model.expecteditems)')" style="float:left; font-size:small; margin:10px">Save CSV</button>
+            <input name="command" type="submit" value="Next" id="next" , style="float:right; font-size:small; margin:10px" />
+            <input name="command" type="submit" value="Previous" id="previous" , style="float:right; font-size:small; margin:10px" />
+        </div>
+    }
+
+}
+
+
